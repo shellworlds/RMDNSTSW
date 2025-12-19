@@ -3,6 +3,12 @@
 QUANTUM FINANCE RISK MODEL (QFRM)
 Advanced quantum simulation for financial market risk analysis
 Single-file implementation with automatic dependency installation
+
+Features:
+- Real-time market data from Yahoo Finance
+- Quantum circuit simulation using Qiskit
+- Animated 3D/2D risk visualizations
+- Comprehensive risk metrics (VaR, CVaR, Sharpe, etc.)
 """
 
 print("=" * 80)
@@ -52,6 +58,7 @@ packages = [
     ("pylatexenc", "pylatexenc"),
     ("psutil", "psutil"),
     ("numba", "numba"),
+    ("pillow", "PIL"),
 ]
 
 for package, import_name in packages:
@@ -66,10 +73,16 @@ print("\n✅ All packages ready!")
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm, gridspec
+from matplotlib.animation import FuncAnimation, PillowWriter, FFMpegWriter
+from matplotlib.collections import PathCollection
 from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Line3D
 import matplotlib.ticker as mticker
+import matplotlib.patches as mpatches
+from matplotlib.lines import Line2D
 import seaborn as sns
 plt.style.use('seaborn-v0_8-darkgrid')
+plt.rcParams['animation.embed_limit'] = 100  # MB limit for animations
 
 # Quantum Computing
 from qiskit import QuantumCircuit, transpile, QuantumRegister, ClassicalRegister
@@ -592,6 +605,531 @@ class FinanceVisualizer:
         return output_file
 
 # ============================================================================
+# ANIMATED VISUALIZATION MODULE
+# ============================================================================
+
+class AnimatedVisualizer:
+    """Create animated 3D/2D quantum risk simulations"""
+    
+    @staticmethod
+    def create_animated_simulation(quantum_results, risk_metrics, output_dir='./finance_risk_output',
+                                   duration_seconds=4, fps=30):
+        """
+        Create a 4-second animated visualization showing quantum risk evolution
+        in both 3D and 2D simultaneously
+        """
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
+        
+        print("\n🎬 Creating animated quantum risk simulation...")
+        print(f"   Duration: {duration_seconds}s at {fps} FPS")
+        
+        # Calculate total frames
+        total_frames = duration_seconds * fps
+        
+        # Extract data
+        risk_scores = np.array(quantum_results.get('risk_scores', [0.5] * 20)[:20])
+        probabilities = np.array(quantum_results.get('probabilities', [0.05] * 20)[:20])
+        expected_risk = quantum_results.get('expected_risk', 0.5)
+        risk_volatility = quantum_results.get('risk_volatility', 0.1)
+        
+        # Generate time-evolving data for simulation
+        np.random.seed(42)  # For reproducibility
+        time_steps = np.linspace(0, duration_seconds, total_frames)
+        
+        # Create evolving risk landscape
+        n_particles = 50
+        particle_x = np.random.randn(n_particles) * 0.3 + 0.5
+        particle_y = np.random.randn(n_particles) * 0.3 + 0.5
+        particle_z = np.random.rand(n_particles) * expected_risk
+        particle_velocities = np.random.randn(n_particles, 3) * 0.02
+        
+        # Create risk wave data
+        wave_x = np.linspace(0, 4 * np.pi, 100)
+        
+        # Create the figure with 2x2 layout (3D left, 2D right)
+        fig = plt.figure(figsize=(16, 10), facecolor='#0a0a1a')
+        fig.patch.set_facecolor('#0a0a1a')
+        
+        # Create grid: top row for main visualizations, bottom for timeline
+        gs = gridspec.GridSpec(2, 2, figure=fig, height_ratios=[3, 1], 
+                              hspace=0.25, wspace=0.2)
+        
+        # 3D subplot (top-left)
+        ax3d = fig.add_subplot(gs[0, 0], projection='3d', facecolor='#0a0a1a')
+        ax3d.set_facecolor('#0a0a1a')
+        ax3d.xaxis.pane.fill = False
+        ax3d.yaxis.pane.fill = False
+        ax3d.zaxis.pane.fill = False
+        ax3d.xaxis.pane.set_edgecolor('#1a1a3a')
+        ax3d.yaxis.pane.set_edgecolor('#1a1a3a')
+        ax3d.zaxis.pane.set_edgecolor('#1a1a3a')
+        ax3d.tick_params(colors='#888888')
+        ax3d.set_xlabel('Risk Factor X', color='#aaaaaa', fontsize=10)
+        ax3d.set_ylabel('Risk Factor Y', color='#aaaaaa', fontsize=10)
+        ax3d.set_zlabel('Risk Intensity', color='#aaaaaa', fontsize=10)
+        ax3d.set_title('3D Quantum Risk State Evolution', color='#00ffcc', fontsize=12, pad=15)
+        
+        # 2D subplot (top-right)
+        ax2d = fig.add_subplot(gs[0, 1], facecolor='#0a0a1a')
+        ax2d.set_facecolor('#0a0a1a')
+        ax2d.tick_params(colors='#888888')
+        ax2d.spines['bottom'].set_color('#1a1a3a')
+        ax2d.spines['top'].set_color('#1a1a3a')
+        ax2d.spines['left'].set_color('#1a1a3a')
+        ax2d.spines['right'].set_color('#1a1a3a')
+        ax2d.set_xlabel('Risk Score', color='#aaaaaa', fontsize=10)
+        ax2d.set_ylabel('Probability Density', color='#aaaaaa', fontsize=10)
+        ax2d.set_title('2D Risk Distribution Wave', color='#ff6b9d', fontsize=12, pad=15)
+        
+        # Timeline subplot (bottom - spans both columns)
+        ax_timeline = fig.add_subplot(gs[1, :], facecolor='#0a0a1a')
+        ax_timeline.set_facecolor('#0a0a1a')
+        ax_timeline.tick_params(colors='#888888')
+        ax_timeline.spines['bottom'].set_color('#1a1a3a')
+        ax_timeline.spines['top'].set_color('#1a1a3a')
+        ax_timeline.spines['left'].set_color('#1a1a3a')
+        ax_timeline.spines['right'].set_color('#1a1a3a')
+        ax_timeline.set_xlabel('Time (s)', color='#aaaaaa', fontsize=10)
+        ax_timeline.set_ylabel('Risk Level', color='#aaaaaa', fontsize=10)
+        ax_timeline.set_title('Real-Time Risk Evolution', color='#ffcc00', fontsize=12, pad=10)
+        ax_timeline.set_xlim(0, duration_seconds)
+        ax_timeline.set_ylim(0, 1)
+        
+        # Initialize plot elements
+        # 3D scatter
+        scatter3d = ax3d.scatter([], [], [], c=[], cmap='plasma', s=80, alpha=0.8)
+        
+        # 3D surface mesh (static base)
+        mesh_x = np.linspace(0, 1, 20)
+        mesh_y = np.linspace(0, 1, 20)
+        mesh_X, mesh_Y = np.meshgrid(mesh_x, mesh_y)
+        
+        # 2D elements
+        line2d, = ax2d.plot([], [], color='#ff6b9d', linewidth=2, alpha=0.9)
+        fill2d = None
+        scatter2d = ax2d.scatter([], [], c=[], cmap='viridis', s=60, alpha=0.7, zorder=5)
+        
+        # Timeline elements
+        timeline_data_x = []
+        timeline_data_y = []
+        timeline_line, = ax_timeline.plot([], [], color='#00ffcc', linewidth=2)
+        timeline_fill = None
+        risk_marker, = ax_timeline.plot([], [], 'o', color='#ff6b9d', markersize=12, zorder=5)
+        
+        # Add static elements
+        ax_timeline.axhline(y=expected_risk, color='#ffcc00', linestyle='--', 
+                           alpha=0.5, label=f'Expected Risk: {expected_risk:.3f}')
+        ax_timeline.fill_between([0, duration_seconds], 
+                                expected_risk - risk_volatility,
+                                expected_risk + risk_volatility,
+                                alpha=0.1, color='#ffcc00')
+        ax_timeline.legend(loc='upper right', facecolor='#0a0a1a', edgecolor='#1a1a3a',
+                          labelcolor='#aaaaaa', fontsize=9)
+        
+        # Title
+        main_title = fig.suptitle('⚛️ QUANTUM FINANCE RISK SIMULATION', 
+                                 fontsize=16, color='#ffffff', fontweight='bold', y=0.98)
+        
+        # Frame counter text
+        frame_text = fig.text(0.02, 0.02, '', fontsize=10, color='#666666')
+        
+        # Store state for animation
+        state = {
+            'particle_pos': np.column_stack([particle_x, particle_y, particle_z]),
+            'particle_vel': particle_velocities,
+            'timeline_x': [],
+            'timeline_y': [],
+            'phase': 0
+        }
+        
+        def init():
+            """Initialize animation"""
+            scatter3d._offsets3d = ([], [], [])
+            line2d.set_data([], [])
+            scatter2d.set_offsets(np.empty((0, 2)))
+            timeline_line.set_data([], [])
+            risk_marker.set_data([], [])
+            return scatter3d, line2d, scatter2d, timeline_line, risk_marker
+        
+        def animate(frame):
+            """Update animation frame"""
+            t = frame / fps  # Current time in seconds
+            progress = frame / total_frames
+            
+            # Update phase for wave animations
+            state['phase'] = t * 2 * np.pi
+            
+            # ========== 3D PARTICLE SIMULATION ==========
+            # Update particle positions with quantum-like behavior
+            noise = np.random.randn(*state['particle_pos'].shape) * 0.01
+            
+            # Add oscillatory motion
+            oscillation = np.sin(state['phase'] + np.arange(n_particles)[:, np.newaxis] * 0.5) * 0.02
+            
+            # Update positions
+            state['particle_pos'] += state['particle_vel'] + noise + oscillation
+            
+            # Boundary reflection
+            for dim in range(3):
+                below = state['particle_pos'][:, dim] < 0
+                above = state['particle_pos'][:, dim] > 1
+                state['particle_vel'][below, dim] = abs(state['particle_vel'][below, dim])
+                state['particle_vel'][above, dim] = -abs(state['particle_vel'][above, dim])
+                state['particle_pos'][:, dim] = np.clip(state['particle_pos'][:, dim], 0, 1)
+            
+            # Color by z position (risk intensity)
+            colors = state['particle_pos'][:, 2]
+            
+            # Update 3D scatter
+            ax3d.clear()
+            ax3d.set_facecolor('#0a0a1a')
+            ax3d.xaxis.pane.fill = False
+            ax3d.yaxis.pane.fill = False
+            ax3d.zaxis.pane.fill = False
+            
+            # Create evolving surface
+            mesh_Z = 0.3 + 0.2 * np.sin(mesh_X * 4 + state['phase']) * np.cos(mesh_Y * 4 - state['phase'] * 0.5)
+            mesh_Z += 0.1 * np.sin(mesh_X * 8 - state['phase'] * 2) * np.sin(mesh_Y * 6 + state['phase'])
+            ax3d.plot_surface(mesh_X, mesh_Y, mesh_Z, cmap='plasma', alpha=0.3, 
+                             linewidth=0, antialiased=True)
+            
+            # Draw particles
+            scatter = ax3d.scatter(state['particle_pos'][:, 0],
+                                  state['particle_pos'][:, 1],
+                                  state['particle_pos'][:, 2],
+                                  c=colors, cmap='plasma', s=80, alpha=0.8,
+                                  edgecolors='white', linewidths=0.5)
+            
+            # Add particle trails
+            for i in range(0, n_particles, 5):
+                trail_length = 5
+                trail_alpha = np.linspace(0.1, 0.5, trail_length)
+                for j in range(trail_length):
+                    offset = (j + 1) * 0.02
+                    trail_pos = state['particle_pos'][i] - state['particle_vel'][i] * offset * 10
+                    ax3d.scatter([trail_pos[0]], [trail_pos[1]], [trail_pos[2]], 
+                               c=[colors[i]], cmap='plasma', s=20, alpha=trail_alpha[j])
+            
+            ax3d.set_xlim(0, 1)
+            ax3d.set_ylim(0, 1)
+            ax3d.set_zlim(0, 1)
+            ax3d.set_xlabel('Risk Factor X', color='#aaaaaa', fontsize=10)
+            ax3d.set_ylabel('Risk Factor Y', color='#aaaaaa', fontsize=10)
+            ax3d.set_zlabel('Risk Intensity', color='#aaaaaa', fontsize=10)
+            ax3d.set_title('3D Quantum Risk State Evolution', color='#00ffcc', fontsize=12, pad=15)
+            ax3d.view_init(elev=20 + 10 * np.sin(state['phase'] * 0.3), 
+                          azim=45 + 30 * np.sin(state['phase'] * 0.2))
+            ax3d.tick_params(colors='#888888')
+            
+            # ========== 2D WAVE SIMULATION ==========
+            ax2d.clear()
+            ax2d.set_facecolor('#0a0a1a')
+            
+            # Create multiple overlapping waves
+            wave1 = 0.3 + 0.2 * np.sin(wave_x - state['phase'] * 2)
+            wave2 = 0.25 + 0.15 * np.sin(wave_x * 1.5 + state['phase'] * 1.5)
+            wave3 = 0.2 + 0.1 * np.sin(wave_x * 2 - state['phase'] * 3)
+            combined_wave = (wave1 + wave2 + wave3) / 3
+            
+            # Normalize x to risk score range
+            wave_x_norm = wave_x / (4 * np.pi)
+            
+            # Plot waves with gradients
+            ax2d.fill_between(wave_x_norm, 0, wave1, alpha=0.3, color='#ff6b9d')
+            ax2d.fill_between(wave_x_norm, 0, wave2, alpha=0.3, color='#00ffcc')
+            ax2d.fill_between(wave_x_norm, 0, wave3, alpha=0.3, color='#ffcc00')
+            
+            ax2d.plot(wave_x_norm, wave1, color='#ff6b9d', linewidth=2, alpha=0.9, label='Market Risk')
+            ax2d.plot(wave_x_norm, wave2, color='#00ffcc', linewidth=2, alpha=0.9, label='Credit Risk')
+            ax2d.plot(wave_x_norm, wave3, color='#ffcc00', linewidth=2, alpha=0.9, label='Quantum Risk')
+            ax2d.plot(wave_x_norm, combined_wave, color='white', linewidth=3, alpha=0.9, 
+                     linestyle='--', label='Combined')
+            
+            # Add moving particles on 2D
+            particle_2d_x = (np.sin(state['phase'] + np.arange(10) * 0.5) + 1) / 2
+            particle_2d_y = np.interp(particle_2d_x, wave_x_norm, combined_wave)
+            particle_2d_colors = particle_2d_y
+            ax2d.scatter(particle_2d_x, particle_2d_y, c=particle_2d_colors, 
+                        cmap='plasma', s=100, alpha=0.9, edgecolors='white', 
+                        linewidths=1, zorder=5)
+            
+            ax2d.set_xlim(0, 1)
+            ax2d.set_ylim(0, 0.8)
+            ax2d.set_xlabel('Risk Score', color='#aaaaaa', fontsize=10)
+            ax2d.set_ylabel('Probability Density', color='#aaaaaa', fontsize=10)
+            ax2d.set_title('2D Risk Distribution Wave', color='#ff6b9d', fontsize=12, pad=15)
+            ax2d.legend(loc='upper right', facecolor='#0a0a1a', edgecolor='#1a1a3a',
+                       labelcolor='#aaaaaa', fontsize=8)
+            ax2d.tick_params(colors='#888888')
+            ax2d.spines['bottom'].set_color('#1a1a3a')
+            ax2d.spines['top'].set_color('#1a1a3a')
+            ax2d.spines['left'].set_color('#1a1a3a')
+            ax2d.spines['right'].set_color('#1a1a3a')
+            
+            # ========== TIMELINE UPDATE ==========
+            # Calculate current risk value
+            current_risk = expected_risk + risk_volatility * np.sin(state['phase']) * 0.5
+            current_risk += np.random.randn() * 0.02  # Add noise
+            current_risk = np.clip(current_risk, 0, 1)
+            
+            state['timeline_x'].append(t)
+            state['timeline_y'].append(current_risk)
+            
+            ax_timeline.clear()
+            ax_timeline.set_facecolor('#0a0a1a')
+            
+            # Draw timeline
+            if len(state['timeline_x']) > 1:
+                # Color gradient based on risk
+                points = np.array([state['timeline_x'], state['timeline_y']]).T.reshape(-1, 1, 2)
+                
+                ax_timeline.plot(state['timeline_x'], state['timeline_y'], 
+                               color='#00ffcc', linewidth=2, alpha=0.9)
+                ax_timeline.fill_between(state['timeline_x'], 0, state['timeline_y'],
+                                        alpha=0.2, color='#00ffcc')
+            
+            # Draw current position marker
+            ax_timeline.plot([t], [current_risk], 'o', color='#ff6b9d', 
+                           markersize=15, zorder=10)
+            ax_timeline.plot([t], [current_risk], 'o', color='white', 
+                           markersize=8, zorder=11)
+            
+            # Static elements
+            ax_timeline.axhline(y=expected_risk, color='#ffcc00', linestyle='--', 
+                               alpha=0.5, linewidth=1)
+            ax_timeline.fill_between([0, duration_seconds], 
+                                    expected_risk - risk_volatility,
+                                    expected_risk + risk_volatility,
+                                    alpha=0.1, color='#ffcc00')
+            
+            ax_timeline.set_xlim(0, duration_seconds)
+            ax_timeline.set_ylim(0, 1)
+            ax_timeline.set_xlabel('Time (s)', color='#aaaaaa', fontsize=10)
+            ax_timeline.set_ylabel('Risk Level', color='#aaaaaa', fontsize=10)
+            ax_timeline.set_title(f'Real-Time Risk Evolution | Current: {current_risk:.3f}', 
+                                 color='#ffcc00', fontsize=12, pad=10)
+            ax_timeline.tick_params(colors='#888888')
+            ax_timeline.spines['bottom'].set_color('#1a1a3a')
+            ax_timeline.spines['top'].set_color('#1a1a3a')
+            ax_timeline.spines['left'].set_color('#1a1a3a')
+            ax_timeline.spines['right'].set_color('#1a1a3a')
+            
+            # Add legend
+            legend_elements = [
+                Line2D([0], [0], color='#00ffcc', linewidth=2, label='Risk Trajectory'),
+                Line2D([0], [0], color='#ffcc00', linestyle='--', label=f'Expected: {expected_risk:.3f}'),
+                Line2D([0], [0], marker='o', color='#ff6b9d', linestyle='None', 
+                       markersize=8, label='Current Risk')
+            ]
+            ax_timeline.legend(handles=legend_elements, loc='upper right', 
+                              facecolor='#0a0a1a', edgecolor='#1a1a3a',
+                              labelcolor='#aaaaaa', fontsize=8)
+            
+            # Update frame counter
+            frame_text.set_text(f'Frame: {frame+1}/{total_frames} | Time: {t:.2f}s')
+            
+            return []
+        
+        # Create animation
+        print("   Generating frames...")
+        anim = FuncAnimation(fig, animate, init_func=init, frames=total_frames,
+                            interval=1000/fps, blit=False)
+        
+        # Save animation as GIF
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        gif_file = f"{output_dir}/quantum_risk_simulation_{timestamp}.gif"
+        
+        print(f"   Saving animation to {gif_file}...")
+        writer = PillowWriter(fps=fps)
+        anim.save(gif_file, writer=writer, dpi=100)
+        
+        plt.close(fig)
+        print(f"   ✓ Animation saved: {gif_file}")
+        
+        return gif_file
+    
+    @staticmethod
+    def create_risk_evolution_animation(risk_metrics, quantum_results, output_dir='./finance_risk_output',
+                                        duration_seconds=4, fps=30):
+        """
+        Create a focused risk evolution animation showing the quantum states morphing
+        """
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
+        
+        print("\n🎬 Creating risk evolution animation...")
+        
+        total_frames = duration_seconds * fps
+        
+        # Get data
+        risk_scores = np.array(quantum_results.get('risk_scores', [])[:30])
+        probabilities = np.array(quantum_results.get('probabilities', [])[:30])
+        expected_risk = quantum_results.get('expected_risk', 0.5)
+        
+        if len(risk_scores) == 0:
+            risk_scores = np.random.rand(30) * 0.8
+            probabilities = np.random.rand(30)
+            probabilities = probabilities / probabilities.sum()
+        
+        # Create figure
+        fig = plt.figure(figsize=(14, 8), facecolor='#0d1117')
+        gs = gridspec.GridSpec(1, 2, figure=fig, wspace=0.15)
+        
+        # 3D subplot
+        ax3d = fig.add_subplot(gs[0, 0], projection='3d', facecolor='#0d1117')
+        
+        # 2D subplot  
+        ax2d = fig.add_subplot(gs[0, 1], facecolor='#0d1117')
+        
+        # Style both axes
+        for ax in [ax3d]:
+            ax.set_facecolor('#0d1117')
+            ax.xaxis.pane.fill = False
+            ax.yaxis.pane.fill = False
+            ax.zaxis.pane.fill = False
+            ax.tick_params(colors='#8b949e')
+        
+        ax2d.set_facecolor('#0d1117')
+        ax2d.tick_params(colors='#8b949e')
+        for spine in ax2d.spines.values():
+            spine.set_color('#30363d')
+        
+        # State for animation
+        n_points = len(risk_scores)
+        theta = np.linspace(0, 2 * np.pi, n_points)
+        
+        def animate(frame):
+            t = frame / fps
+            phase = t * 2 * np.pi / duration_seconds * 2
+            
+            # Clear axes
+            ax3d.clear()
+            ax2d.clear()
+            
+            # Style
+            ax3d.set_facecolor('#0d1117')
+            ax3d.xaxis.pane.fill = False
+            ax3d.yaxis.pane.fill = False
+            ax3d.zaxis.pane.fill = False
+            ax2d.set_facecolor('#0d1117')
+            for spine in ax2d.spines.values():
+                spine.set_color('#30363d')
+            
+            # ===== 3D: Helical quantum state visualization =====
+            # Create morphing helix
+            helix_t = np.linspace(0, 4 * np.pi, 100)
+            helix_x = np.cos(helix_t + phase) * (1 + 0.3 * np.sin(phase * 2))
+            helix_y = np.sin(helix_t + phase) * (1 + 0.3 * np.cos(phase * 2))
+            helix_z = helix_t / (4 * np.pi)
+            
+            # Plot helix with color gradient
+            for i in range(len(helix_t) - 1):
+                color = cm.plasma(helix_z[i])
+                ax3d.plot(helix_x[i:i+2], helix_y[i:i+2], helix_z[i:i+2], 
+                         color=color, linewidth=2, alpha=0.8)
+            
+            # Add quantum state points
+            point_x = np.cos(theta + phase) * risk_scores
+            point_y = np.sin(theta + phase) * risk_scores
+            point_z = probabilities * 2
+            
+            scatter = ax3d.scatter(point_x, point_y, point_z, 
+                                  c=risk_scores, cmap='plasma', s=100,
+                                  alpha=0.9, edgecolors='white', linewidths=0.5)
+            
+            # Add connecting lines to center
+            for i in range(n_points):
+                ax3d.plot([0, point_x[i]], [0, point_y[i]], [0, point_z[i]],
+                         color=cm.plasma(risk_scores[i]), alpha=0.3, linewidth=0.5)
+            
+            ax3d.set_xlim(-1.5, 1.5)
+            ax3d.set_ylim(-1.5, 1.5)
+            ax3d.set_zlim(0, 1)
+            ax3d.set_xlabel('Quantum X', color='#8b949e', fontsize=9)
+            ax3d.set_ylabel('Quantum Y', color='#8b949e', fontsize=9)
+            ax3d.set_zlabel('Probability', color='#8b949e', fontsize=9)
+            ax3d.set_title('3D Quantum State Space', color='#58a6ff', fontsize=12, pad=15)
+            ax3d.view_init(elev=25 + 10 * np.sin(phase * 0.5), azim=phase * 30)
+            ax3d.tick_params(colors='#8b949e')
+            
+            # ===== 2D: Radar/polar-like visualization =====
+            # Create circular risk profile
+            angles = np.linspace(0, 2 * np.pi, n_points + 1)
+            values = np.concatenate([risk_scores, [risk_scores[0]]])
+            probs = np.concatenate([probabilities, [probabilities[0]]])
+            
+            # Animated expansion
+            scale = 0.8 + 0.2 * np.sin(phase)
+            scaled_values = values * scale
+            
+            # Convert to cartesian
+            x = scaled_values * np.cos(angles + phase * 0.5)
+            y = scaled_values * np.sin(angles + phase * 0.5)
+            
+            # Draw filled polygon
+            ax2d.fill(x, y, alpha=0.3, color='#58a6ff')
+            ax2d.plot(x, y, color='#58a6ff', linewidth=2, alpha=0.9)
+            
+            # Draw probability ring
+            prob_x = probs * 0.5 * np.cos(angles - phase * 0.3)
+            prob_y = probs * 0.5 * np.sin(angles - phase * 0.3)
+            ax2d.fill(prob_x, prob_y, alpha=0.3, color='#f85149')
+            ax2d.plot(prob_x, prob_y, color='#f85149', linewidth=2, alpha=0.9)
+            
+            # Draw points
+            point_colors = cm.plasma(scaled_values[:-1])
+            ax2d.scatter(x[:-1], y[:-1], c=risk_scores, cmap='plasma', 
+                        s=80, alpha=0.9, edgecolors='white', linewidths=1, zorder=5)
+            
+            # Draw radial lines
+            for i in range(0, n_points, 3):
+                ax2d.plot([0, x[i]], [0, y[i]], color='#30363d', 
+                         linewidth=0.5, alpha=0.5)
+            
+            # Draw circles
+            for r in [0.25, 0.5, 0.75]:
+                circle = plt.Circle((0, 0), r, fill=False, color='#30363d', 
+                                   linewidth=0.5, alpha=0.5)
+                ax2d.add_patch(circle)
+            
+            ax2d.set_xlim(-1.2, 1.2)
+            ax2d.set_ylim(-1.2, 1.2)
+            ax2d.set_aspect('equal')
+            ax2d.set_xlabel('Risk Dimension 1', color='#8b949e', fontsize=9)
+            ax2d.set_ylabel('Risk Dimension 2', color='#8b949e', fontsize=9)
+            ax2d.set_title('2D Risk Profile Evolution', color='#f85149', fontsize=12, pad=15)
+            ax2d.tick_params(colors='#8b949e')
+            
+            # Add legend
+            legend_elements = [
+                mpatches.Patch(color='#58a6ff', alpha=0.3, label='Risk Envelope'),
+                mpatches.Patch(color='#f85149', alpha=0.3, label='Probability Ring')
+            ]
+            ax2d.legend(handles=legend_elements, loc='upper right',
+                       facecolor='#0d1117', edgecolor='#30363d', labelcolor='#8b949e')
+            
+            # Main title with timer
+            fig.suptitle(f'⚛️ QUANTUM RISK EVOLUTION | Time: {t:.2f}s', 
+                        fontsize=14, color='#ffffff', fontweight='bold', y=0.98)
+            
+            return []
+        
+        anim = FuncAnimation(fig, animate, frames=total_frames,
+                            interval=1000/fps, blit=False)
+        
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        gif_file = f"{output_dir}/risk_evolution_{timestamp}.gif"
+        
+        print(f"   Saving to {gif_file}...")
+        writer = PillowWriter(fps=fps)
+        anim.save(gif_file, writer=writer, dpi=100)
+        
+        plt.close(fig)
+        print(f"   ✓ Animation saved: {gif_file}")
+        
+        return gif_file
+
+
+# ============================================================================
 # PERFORMANCE MONITOR
 # ============================================================================
 
@@ -749,7 +1287,25 @@ def run_quantum_finance_risk_model(n_qubits=20, shots=5000, output_dir='./financ
     interactive_file = visualizer.create_interactive_report(risk_metrics, quantum_results, output_dir)
     print(f"  ✓ Interactive report saved: {interactive_file}")
     
-    monitor.checkpoint("Visualization Complete")
+    monitor.checkpoint("Static Visualization Complete")
+    
+    # Step 5b: Generate animated simulations (4 seconds)
+    print("\n5b. Generating animated simulations (4 seconds)...")
+    animator = AnimatedVisualizer()
+    
+    # Create main quantum simulation animation
+    simulation_gif = animator.create_animated_simulation(
+        quantum_results, risk_metrics, output_dir,
+        duration_seconds=4, fps=30
+    )
+    
+    # Create risk evolution animation
+    evolution_gif = animator.create_risk_evolution_animation(
+        risk_metrics, quantum_results, output_dir,
+        duration_seconds=4, fps=30
+    )
+    
+    monitor.checkpoint("Animation Complete")
     
     # Step 6: Save comprehensive report
     print("\n6. Saving comprehensive risk report...")
@@ -837,10 +1393,12 @@ Output files created in: {output_dir}
     print(f"End Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("-" * 80)
     print("Generated Output Files:")
-    print(f"  Dashboard PNG: {dashboard_file}")
-    print(f"  Interactive HTML: {interactive_file}")
-    print(f"  JSON Report: {report_file}")
-    print(f"  Text Summary: {summary_file}")
+    print(f"  📊 Dashboard PNG: {dashboard_file}")
+    print(f"  📈 Interactive HTML: {interactive_file}")
+    print(f"  📋 JSON Report: {report_file}")
+    print(f"  📝 Text Summary: {summary_file}")
+    print(f"  🎬 Simulation GIF: {simulation_gif}")
+    print(f"  🎬 Evolution GIF: {evolution_gif}")
     print("=" * 80)
     
     return {
@@ -848,6 +1406,8 @@ Output files created in: {output_dir}
         'interactive': interactive_file,
         'report': report_file,
         'summary': summary_file,
+        'simulation_animation': simulation_gif,
+        'evolution_animation': evolution_gif,
         'risk_metrics': risk_metrics,
         'quantum_results': quantum_results
     }

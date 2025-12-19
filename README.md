@@ -22,8 +22,9 @@ QFRM is a cutting-edge financial risk analysis tool that combines **quantum comp
 - ⚛️ **Quantum Risk Simulation** — 20-qubit quantum circuit for risk state analysis
 - 📊 **Traditional Metrics** — VaR, CVaR, Sharpe Ratio, Maximum Drawdown, Volatility
 - 📈 **Interactive Visualizations** — 3D risk distributions, correlation heatmaps, risk timelines
+- 🎬 **Animated Simulations** — 4-second 3D/2D quantum risk evolution animations (GIF)
 - 🎯 **Correlation Analysis** — Cross-asset correlation matrices with entropy calculations
-- 📋 **Comprehensive Reports** — JSON, PNG, HTML, and TXT output formats
+- 📋 **Comprehensive Reports** — JSON, PNG, HTML, GIF, and TXT output formats
 
 ---
 
@@ -67,6 +68,24 @@ After execution, the model generates:
 | `finance_risk_report_*.html` | Interactive Plotly report |
 | `finance_risk_report_*.json` | Comprehensive JSON data |
 | `risk_summary_*.txt` | Text summary of key metrics |
+| `quantum_risk_simulation_*.gif` | 🎬 4-second animated 3D/2D quantum simulation |
+| `risk_evolution_*.gif` | 🎬 4-second risk evolution animation |
+
+### 🎬 Animation Features
+
+The model generates two animated GIF simulations:
+
+1. **Quantum Risk Simulation** (`quantum_risk_simulation_*.gif`)
+   - 3D particle system showing quantum risk states
+   - Evolving risk surface mesh
+   - 2D overlapping risk waves (Market, Credit, Quantum)
+   - Real-time risk timeline with trajectory
+
+2. **Risk Evolution** (`risk_evolution_*.gif`)
+   - 3D helical quantum state visualization
+   - 2D polar risk profile with rotating envelope
+   - Probability ring animation
+   - Synchronized 4-second duration at 30 FPS
 
 ---
 
