@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QFRM Documentation | Quantum Finance Risk Model</title>
+    <meta name="description" content="Complete documentation for Quantum Finance Risk Model - Advanced quantum simulation for financial market risk analysis">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap');
+        
+        :root {
+            --primary: #000000;
+            --secondary: #1a1a1a;
+            --accent: #0066ff;
+            --danger: #ff3366;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --quantum: #00ffcc;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 62.5%;
+        }
+
+        body {
+            font-family: 'Calibri Light', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: var(--primary);
+            background: #ffffff;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gray-200);
+            z-index: 1000;
+            padding: 1.2rem 0;
+        }
+
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .brand-name {
+            font-size: 1.4rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+
+        .brand-icon {
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        .nav-menu a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 1.1rem;
+            position: relative;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.6;
+        }
+
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 5rem;
+            padding: 6rem 0 4rem;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 50%, #0d1117 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 255, 204, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.6rem;
+            font-weight: 200;
+            line-height: 1.2;
+            margin-bottom: 1.6rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h1 span {
+            color: var(--quantum);
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            opacity: 0.8;
+            max-width: 700px;
+        }
+
+        .version-badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: var(--accent);
+            color: white;
+            font-size: 1rem;
+            border-radius: 0.2rem;
+            margin-top: 2rem;
+            margin-right: 1rem;
+        }
+
+        .version-badge.quantum {
+            background: linear-gradient(90deg, var(--purple), var(--pink));
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            max-width: 1440px;
+            margin: 0 auto;
+            min-height: calc(100vh - 5rem);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--gray-100);
+            border-right: 1px solid var(--gray-200);
+            padding: 3rem 0;
+            position: sticky;
+            top: 5rem;
+            height: calc(100vh - 5rem);
+            overflow-y: auto;
+        }
+
+        .sidebar-section {
+            margin-bottom: 3rem;
+            padding: 0 2rem;
+        }
+
+        .sidebar-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--gray-600);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 0.8rem 1.2rem;
+            color: var(--gray-700);
+            text-decoration: none;
+            font-size: 1.2rem;
+            border-radius: 0.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-menu a:hover {
+            background: var(--gray-200);
+            color: var(--primary);
+        }
+
+        .sidebar-menu a.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .sidebar-menu a.file-link {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .sidebar-menu a.file-link::before {
+            content: '📄';
+            font-size: 1rem;
+        }
+
+        .sidebar-menu a.file-link.gif::before {
+            content: '🎬';
+        }
+
+        .sidebar-menu a.file-link.html::before {
+            content: '📊';
+        }
+
+        .sidebar-menu a.file-link.json::before {
+            content: '📋';
+        }
+
+        .sidebar-menu a.file-link.py::before {
+            content: '🐍';
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 4rem;
+            max-width: 900px;
+        }
+
+        .content-section {
+            margin-bottom: 6rem;
+        }
+
+        .content-section h2 {
+            font-size: 2.8rem;
+            font-weight: 200;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .content-section h3 {
+            font-size: 2rem;
+            font-weight: 400;
+            margin: 3rem 0 1.6rem;
+        }
+
+        .content-section h4 {
+            font-size: 1.6rem;
+            font-weight: 400;
+            margin: 2rem 0 1rem;
+            color: var(--gray-700);
+        }
+
+        .content-section p {
+            font-size: 1.3rem;
+            color: var(--gray-700);
+            margin-bottom: 1.6rem;
+            line-height: 1.8;
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--gray-900);
+            color: #e6e6e6;
+            padding: 2rem;
+            border-radius: 0.4rem;
+            overflow-x: auto;
+            margin: 2rem 0;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            font-size: 1.1rem;
+            background: var(--gray-100);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.2rem;
+            color: var(--danger);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        .code-comment {
+            color: #6a9955;
+        }
+
+        .code-string {
+            color: #ce9178;
+        }
+
+        .code-keyword {
+            color: #569cd6;
+        }
+
+        .code-number {
+            color: #b5cea8;
+        }
+
+        /* Metric Cards */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .metric-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.4rem;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-value {
+            font-size: 2.4rem;
+            font-weight: 400;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value.danger {
+            color: var(--danger);
+        }
+
+        .metric-value.success {
+            color: var(--success);
+        }
+
+        .metric-value.purple {
+            color: var(--purple);
+        }
+
+        .metric-label {
+            font-size: 1.1rem;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* API Endpoint */
+        .endpoint {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.4rem;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 1.6rem;
+            margin-bottom: 1.6rem;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            border-radius: 0.2rem;
+            color: white;
+        }
+
+        .method.get { background: var(--success); }
+        .method.post { background: var(--accent); }
+        .method.put { background: var(--warning); }
+        .method.delete { background: var(--danger); }
+        .method.quantum { background: linear-gradient(90deg, var(--purple), var(--pink)); }
+        .method.run { background: var(--purple); }
+
+        .endpoint-path {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            color: var(--gray-800);
+        }
+
+        /* Parameters Table */
+        .params-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.6rem 0;
+        }
+
+        .params-table th {
+            text-align: left;
+            padding: 1rem;
+            background: var(--gray-100);
+            border-bottom: 1px solid var(--gray-300);
+            font-weight: 400;
+            font-size: 1.1rem;
+            color: var(--gray-700);
+        }
+
+        .params-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 1.1rem;
+        }
+
+        .params-table .param-name {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+        }
+
+        .params-table .param-type {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--purple);
+            font-size: 1rem;
+        }
+
+        .required {
+            color: var(--danger);
+            font-size: 1rem;
+        }
+
+        /* Response Example */
+        .response-example {
+            background: var(--gray-100);
+            border-left: 3px solid var(--success);
+            padding: 2rem;
+            margin: 2rem 0;
+            border-radius: 0.4rem;
+        }
+
+        .response-example.quantum {
+            border-left-color: var(--purple);
+        }
+
+        .response-example h5 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--success);
+        }
+
+        .response-example.quantum h5 {
+            color: var(--purple);
+        }
+
+        /* File Links */
+        .file-card {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.4rem;
+            padding: 1.5rem 2rem;
+            margin: 1rem 0;
+            text-decoration: none;
+            color: var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .file-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 2px 8px rgba(0, 102, 255, 0.1);
+        }
+
+        .file-icon {
+            font-size: 2.4rem;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-size: 1.3rem;
+            font-weight: 400;
+            margin-bottom: 0.3rem;
+        }
+
+        .file-desc {
+            font-size: 1.1rem;
+            color: var(--gray-600);
+        }
+
+        .file-size {
+            font-size: 1rem;
+            color: var(--gray-500);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Simulation Preview */
+        .simulation-preview {
+            background: var(--gray-900);
+            border-radius: 0.4rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .simulation-preview img {
+            max-width: 100%;
+            border-radius: 0.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .simulation-preview p {
+            color: var(--gray-400);
+            font-size: 1.1rem;
+        }
+
+        /* Error Codes */
+        .error-codes {
+            list-style: none;
+            margin: 1.6rem 0;
+        }
+
+        .error-codes li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .error-code {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            background: var(--danger);
+            color: white;
+            font-size: 1rem;
+            border-radius: 0.2rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Feature List */
+        .feature-list {
+            list-style: none;
+            margin: 2rem 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.3rem;
+            color: var(--gray-700);
+        }
+
+        .feature-list li::before {
+            content: '✓';
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 400;
+            border: 1px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            letter-spacing: 0.02em;
+            border-radius: 0.2rem;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .btn-quantum {
+            background: linear-gradient(90deg, var(--purple), var(--pink));
+            border: none;
+            color: white;
+        }
+
+        .btn-quantum:hover {
+            opacity: 0.9;
+            background: linear-gradient(90deg, var(--purple), var(--pink));
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 0 2rem;
+            border-top: 1px solid var(--gray-200);
+            background: var(--gray-100);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 1.1rem;
+            color: var(--gray-600);
+        }
+
+        .footer-links {
+            margin-top: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--gray-600);
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 1.1rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .main-content {
+                padding: 2rem;
+            }
+
+            .endpoint-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .params-table {
+                font-size: 1rem;
+            }
+
+            pre {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-left">
+                <span class="brand-name"><span class="brand-icon">⚛️</span>QFRM Research</span>
+                <ul class="nav-menu">
+                    <li><a href="#overview" class="active">Overview</a></li>
+                    <li><a href="#metrics">Risk Metrics</a></li>
+                    <li><a href="#simulations">Simulations</a></li>
+                    <li><a href="#quantum">Quantum Circuit</a></li>
+                    <li><a href="#outputs">Outputs</a></li>
+                </ul>
+            </div>
+            <div class="nav-actions">
+                <a href="https://github.com/shellworlds/RMDNSTSW" target="_blank" class="btn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    GitHub
+                </a>
+                <a href="qfrm.py" download class="btn btn-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                    </svg>
+                    Download QFRM
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Quantum Finance <span>Risk Model</span></h1>
+            <p>Advanced quantum simulation for financial market risk analysis. Combining quantum computing with traditional finance metrics for comprehensive portfolio risk assessment.</p>
+            <span class="version-badge">QFRM v1.0</span>
+            <span class="version-badge quantum">20 Qubits</span>
+            <span class="version-badge" style="background: var(--success);">Qiskit Powered</span>
+        </div>
+    </section>
+
+    <!-- Layout -->
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Getting Started</h3>
+                <ul class="sidebar-menu">
+                    <li><a href="#overview" class="active">Overview</a></li>
+                    <li><a href="#installation">Installation</a></li>
+                    <li><a href="#quickstart">Quick Start</a></li>
+                    <li><a href="#configuration">Configuration</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Risk Analysis</h3>
+                <ul class="sidebar-menu">
+                    <li><a href="#var">Value at Risk (VaR)</a></li>
+                    <li><a href="#cvar">Conditional VaR</a></li>
+                    <li><a href="#volatility">Volatility</a></li>
+                    <li><a href="#sharpe">Sharpe Ratio</a></li>
+                    <li><a href="#correlation">Correlation Analysis</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Quantum Simulation</h3>
+                <ul class="sidebar-menu">
+                    <li><a href="#circuit">Circuit Design</a></li>
+                    <li><a href="#entanglement">Entanglement</a></li>
+                    <li><a href="#measurement">Measurement</a></li>
+                    <li><a href="#states">Risk States</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Output Files</h3>
+                <ul class="sidebar-menu">
+                    <li><a href="finance_risk_output/finance_risk_dashboard_20251219_235148.png" target="_blank" class="file-link">Dashboard PNG</a></li>
+                    <li><a href="finance_risk_output/finance_risk_report_20251219_235149.html" target="_blank" class="file-link html">Interactive Report</a></li>
+                    <li><a href="finance_risk_output/quantum_risk_simulation_20251219_235149.gif" target="_blank" class="file-link gif">Simulation GIF</a></li>
+                    <li><a href="finance_risk_output/risk_evolution_20251219_235234.gif" target="_blank" class="file-link gif">Evolution GIF</a></li>
+                    <li><a href="finance_risk_output/finance_risk_report_20251219_235145.json" target="_blank" class="file-link json">JSON Report</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">Source Code</h3>
+                <ul class="sidebar-menu">
+                    <li><a href="qfrm.py" class="file-link py">qfrm.py</a></li>
+                    <li><a href="requirements.txt" class="file-link">requirements.txt</a></li>
+                    <li><a href="README.md" class="file-link">README.md</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <section id="overview" class="content-section">
+                <h2>Overview</h2>
+                <p>The Quantum Finance Risk Model (QFRM) is a cutting-edge financial risk analysis tool that combines quantum computing simulations with traditional risk metrics to provide comprehensive portfolio risk assessment.</p>
+                
+                <h3>Key Features</h3>
+                <ul class="feature-list">
+                    <li>Real-time market data from Yahoo Finance (19 assets across stocks, indices, commodities, crypto)</li>
+                    <li>20-qubit quantum circuit for risk state analysis using IBM Qiskit</li>
+                    <li>Traditional metrics: VaR, CVaR, Sharpe Ratio, Maximum Drawdown, Volatility</li>
+                    <li>4-second animated 3D/2D quantum risk simulations</li>
+                    <li>Cross-asset correlation matrices with entropy calculations</li>
+                    <li>Comprehensive JSON, PNG, HTML, GIF, and TXT output formats</li>
+                </ul>
+
+                <h3>Latest Results</h3>
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="metric-value danger">-2.68%</div>
+                        <div class="metric-label">VaR (95%)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value danger">-4.29%</div>
+                        <div class="metric-label">CVaR (95%)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">29.35%</div>
+                        <div class="metric-label">Volatility</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value success">1.15</div>
+                        <div class="metric-label">Sharpe Ratio</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value purple">0.146</div>
+                        <div class="metric-label">Quantum Risk</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">331</div>
+                        <div class="metric-label">Quantum States</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="installation" class="content-section">
+                <h2>Installation</h2>
+                <p>Clone the repository and install dependencies to get started with QFRM.</p>
+                
+                <h3>Quick Install</h3>
+                <pre><code><span class="code-comment"># Clone the repository</span>
+git clone https://github.com/shellworlds/RMDNSTSW.git
+cd RMDNSTSW
+
+<span class="code-comment"># Install dependencies</span>
+pip install -r requirements.txt
+
+<span class="code-comment"># Run the model</span>
+python qfrm.py</code></pre>
+                
+                <h3>Requirements</h3>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>Package</th>
+                            <th>Version</th>
+                            <th>Purpose</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="param-name">qiskit</span></td>
+                            <td><span class="param-type">≥1.0.0</span></td>
+                            <td>Quantum circuit simulation</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">qiskit-aer</span></td>
+                            <td><span class="param-type">≥0.13.0</span></td>
+                            <td>Aer quantum simulator backend</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">yfinance</span></td>
+                            <td><span class="param-type">≥0.2.28</span></td>
+                            <td>Yahoo Finance market data</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">numpy</span></td>
+                            <td><span class="param-type">≥1.24.0</span></td>
+                            <td>Numerical computations</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">matplotlib</span></td>
+                            <td><span class="param-type">≥3.7.0</span></td>
+                            <td>Static & animated visualizations</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">plotly</span></td>
+                            <td><span class="param-type">≥5.14.0</span></td>
+                            <td>Interactive HTML reports</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="quickstart" class="content-section">
+                <h2>Quick Start</h2>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method run">RUN</span>
+                        <span class="endpoint-path">python qfrm.py [options]</span>
+                    </div>
+                    <p>Execute the quantum finance risk model with customizable parameters.</p>
+                    
+                    <h4>Command Line Options</h4>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Type</th>
+                                <th>Default</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">--qubits</span></td>
+                                <td><span class="param-type">int</span></td>
+                                <td>20</td>
+                                <td>Number of qubits in quantum circuit</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">--shots</span></td>
+                                <td><span class="param-type">int</span></td>
+                                <td>5000</td>
+                                <td>Number of quantum measurement shots</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">--output</span></td>
+                                <td><span class="param-type">string</span></td>
+                                <td>./finance_risk_output</td>
+                                <td>Output directory for reports</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4>Example Commands</h4>
+                    <pre><code><span class="code-comment"># Default execution (20 qubits, 5000 shots)</span>
+python qfrm.py
+
+<span class="code-comment"># Quick test with reduced parameters</span>
+python qfrm.py --qubits <span class="code-number">10</span> --shots <span class="code-number">1000</span>
+
+<span class="code-comment"># High precision simulation</span>
+python qfrm.py --qubits <span class="code-number">25</span> --shots <span class="code-number">10000</span> --output ./high_precision</code></pre>
+
+                    <div class="response-example quantum">
+                        <h5>Expected Output</h5>
+                        <pre><code>================================================================================
+QUANTUM FINANCE RISK MODEL - EXECUTION COMPLETE
+================================================================================
+Generated Output Files:
+  📊 Dashboard PNG: ./finance_risk_output/finance_risk_dashboard_*.png
+  📈 Interactive HTML: ./finance_risk_output/finance_risk_report_*.html
+  📋 JSON Report: ./finance_risk_output/finance_risk_report_*.json
+  📝 Text Summary: ./finance_risk_output/risk_summary_*.txt
+  🎬 Simulation GIF: ./finance_risk_output/quantum_risk_simulation_*.gif
+  🎬 Evolution GIF: ./finance_risk_output/risk_evolution_*.gif
+================================================================================</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="simulations" class="content-section">
+                <h2>Animated Simulations</h2>
+                <p>QFRM generates two 4-second animated GIF simulations showing quantum risk evolution in both 3D and 2D.</p>
+                
+                <h3>Quantum Risk Simulation</h3>
+                <div class="simulation-preview">
+                    <a href="finance_risk_output/quantum_risk_simulation_20251219_235149.gif" target="_blank">
+                        <img src="finance_risk_output/quantum_risk_simulation_20251219_235149.gif" alt="Quantum Risk Simulation">
+                    </a>
+                    <p>Click to open full animation • 3D particles + 2D waves + Real-time timeline</p>
+                </div>
+
+                <h3>Risk Evolution Animation</h3>
+                <div class="simulation-preview">
+                    <a href="finance_risk_output/risk_evolution_20251219_235234.gif" target="_blank">
+                        <img src="finance_risk_output/risk_evolution_20251219_235234.gif" alt="Risk Evolution Animation">
+                    </a>
+                    <p>Click to open full animation • 3D helix + 2D polar profile</p>
+                </div>
+
+                <h3>Animation Features</h3>
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>Animation</th>
+                            <th>Duration</th>
+                            <th>FPS</th>
+                            <th>Features</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="param-name">quantum_risk_simulation</span></td>
+                            <td>4 seconds</td>
+                            <td>30</td>
+                            <td>50 particles, surface mesh, wave dynamics, timeline</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">risk_evolution</span></td>
+                            <td>4 seconds</td>
+                            <td>30</td>
+                            <td>Helical states, polar profile, probability ring</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="quantum" class="content-section">
+                <h2>Quantum Circuit Design</h2>
+                <p>The QFRM uses a sophisticated quantum circuit architecture to encode market correlations and volatilities into quantum states.</p>
+
+                <h3>Circuit Architecture</h3>
+                <pre><code>┌──────────────────────────────────────────────────────────┐
+│ Quantum Finance Circuit (20 qubits)                      │
+├──────────────────────────────────────────────────────────┤
+│ Layer 1: RY gates      → Volatility encoding             │
+│ Layer 2: CRZ gates     → Correlation entanglement        │
+│ Layer 3: MCX gates     → Market regime transitions       │
+│ Layer 4: RXX/RYY gates → Temporal dynamics               │
+│ Layer 5: CX gates      → Risk measurement                │
+│ Layer 6: Measurement   → State collapse                  │
+└──────────────────────────────────────────────────────────┘</code></pre>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method quantum">QUANTUM</span>
+                        <span class="endpoint-path">QuantumFinanceCircuit.build_market_circuit()</span>
+                    </div>
+                    <p>Build quantum circuit encoding market correlations and volatilities.</p>
+                    
+                    <h4>Parameters</h4>
+                    <table class="params-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="param-name">correlation_matrix</span></td>
+                                <td><span class="param-type">np.ndarray</span></td>
+                                <td>Cross-asset correlation matrix</td>
+                            </tr>
+                            <tr>
+                                <td><span class="param-name">volatility_vector</span></td>
+                                <td><span class="param-type">np.ndarray</span></td>
+                                <td>Asset volatility values</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="response-example quantum">
+                        <h5>Circuit Statistics</h5>
+                        <pre><code>{
+  "n_qubits": 20,
+  "circuit_depth": 127,
+  "total_gates": 312,
+  "gate_breakdown": {
+    "ry": 20,
+    "crz": 48,
+    "mcx": 6,
+    "rxx": 20,
+    "ryy": 20,
+    "cx": 10
+  }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <section id="metrics" class="content-section">
+                <h2>Risk Metrics</h2>
+                <p>QFRM calculates comprehensive financial risk metrics combining traditional quantitative finance with quantum-derived insights.</p>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">CALC</span>
+                        <span class="endpoint-path">RiskMetricsCalculator.calculate_var(returns, confidence)</span>
+                    </div>
+                    <p>Calculate Value at Risk (VaR) - the maximum expected loss at a given confidence level.</p>
+                    
+                    <h4>Formula</h4>
+                    <pre><code>VaR(α) = -percentile(returns, 1-α)
+
+<span class="code-comment"># Example: 95% VaR means we're 95% confident the loss won't exceed this value</span>
+var_95 = np.percentile(returns, 5)  <span class="code-comment"># → -0.0268 (-2.68%)</span></code></pre>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">CALC</span>
+                        <span class="endpoint-path">RiskMetricsCalculator.calculate_cvar(returns, confidence)</span>
+                    </div>
+                    <p>Calculate Conditional Value at Risk (CVaR) - the expected loss beyond the VaR threshold.</p>
+                    
+                    <h4>Formula</h4>
+                    <pre><code>CVaR(α) = E[X | X ≤ VaR(α)]
+
+<span class="code-comment"># Average of all returns worse than VaR</span>
+cvar_95 = mean(returns[returns <= var_95])  <span class="code-comment"># → -0.0429 (-4.29%)</span></code></pre>
+                </div>
+
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">CALC</span>
+                        <span class="endpoint-path">RiskMetricsCalculator.calculate_sharpe_ratio(returns)</span>
+                    </div>
+                    <p>Calculate Sharpe Ratio - risk-adjusted return metric.</p>
+                    
+                    <h4>Formula</h4>
+                    <pre><code>Sharpe = (E[R] - Rf) / σ × √252
+
+<span class="code-comment"># Annualized Sharpe Ratio with 2% risk-free rate</span>
+sharpe = (mean(returns) - 0.02/252) / std(returns) * sqrt(252)  <span class="code-comment"># → 1.15</span></code></pre>
+                </div>
+            </section>
+
+            <section id="outputs" class="content-section">
+                <h2>Output Files</h2>
+                <p>QFRM generates comprehensive output files for analysis, reporting, and visualization.</p>
+                
+                <a href="finance_risk_output/finance_risk_dashboard_20251219_235148.png" target="_blank" class="file-card">
+                    <span class="file-icon">📊</span>
+                    <div class="file-info">
+                        <div class="file-name">finance_risk_dashboard_*.png</div>
+                        <div class="file-desc">Visual risk dashboard with 6 panels: 3D distribution, correlation heatmap, metrics bar chart, scatter plot, timeline, pie chart</div>
+                    </div>
+                    <span class="file-size">~900 KB</span>
+                </a>
+
+                <a href="finance_risk_output/finance_risk_report_20251219_235149.html" target="_blank" class="file-card">
+                    <span class="file-icon">📈</span>
+                    <div class="file-info">
+                        <div class="file-name">finance_risk_report_*.html</div>
+                        <div class="file-desc">Interactive Plotly report with 3D scatter, heatmap, bar charts, and pie visualization</div>
+                    </div>
+                    <span class="file-size">~4.8 MB</span>
+                </a>
+
+                <a href="finance_risk_output/quantum_risk_simulation_20251219_235149.gif" target="_blank" class="file-card">
+                    <span class="file-icon">🎬</span>
+                    <div class="file-info">
+                        <div class="file-name">quantum_risk_simulation_*.gif</div>
+                        <div class="file-desc">4-second animated quantum simulation: 3D particles, 2D waves, real-time timeline</div>
+                    </div>
+                    <span class="file-size">~12 MB</span>
+                </a>
+
+                <a href="finance_risk_output/risk_evolution_20251219_235234.gif" target="_blank" class="file-card">
+                    <span class="file-icon">🎬</span>
+                    <div class="file-info">
+                        <div class="file-name">risk_evolution_*.gif</div>
+                        <div class="file-desc">4-second risk evolution animation: 3D helix, 2D polar profile</div>
+                    </div>
+                    <span class="file-size">~6.4 MB</span>
+                </a>
+
+                <a href="finance_risk_output/finance_risk_report_20251219_235145.json" target="_blank" class="file-card">
+                    <span class="file-icon">📋</span>
+                    <div class="file-info">
+                        <div class="file-name">finance_risk_report_*.json</div>
+                        <div class="file-desc">Comprehensive JSON data: all metrics, quantum results, performance data</div>
+                    </div>
+                    <span class="file-size">~3 KB</span>
+                </a>
+
+                <div class="btn-group">
+                    <a href="finance_risk_output/" class="btn btn-primary">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                        </svg>
+                        Browse All Outputs
+                    </a>
+                    <a href="qfrm.py" download class="btn btn-quantum">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                        </svg>
+                        Download Source Code
+                    </a>
+                </div>
+            </section>
+
+            <section id="data" class="content-section">
+                <h2>Market Data Sources</h2>
+                <p>QFRM fetches real-time market data from Yahoo Finance covering multiple asset classes.</p>
+                
+                <table class="params-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Assets</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="param-name">Stocks</span></td>
+                            <td>AAPL, MSFT, GOOGL, AMZN, TSLA, JPM, V, JNJ, WMT, NVDA</td>
+                            <td>10</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">Indices</span></td>
+                            <td>S&P 500 (^GSPC), NASDAQ (^IXIC), Dow Jones (^DJI), Russell 2000 (^RUT)</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">Commodities</span></td>
+                            <td>Gold (GC=F), Crude Oil (CL=F), Silver (SI=F)</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td><span class="param-name">Crypto</span></td>
+                            <td>Bitcoin (BTC-USD), Ethereum (ETH-USD)</td>
+                            <td>2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="api" class="content-section">
+                <h2>Python API Reference</h2>
+                <p>QFRM can be imported and used programmatically in your Python applications.</p>
+                
+                <h3>Example Usage</h3>
+                <pre><code><span class="code-keyword">from</span> qfrm <span class="code-keyword">import</span> (
+    FinancialDataLoader,
+    QuantumFinanceCircuit,
+    RiskMetricsCalculator,
+    FinanceVisualizer,
+    AnimatedVisualizer
+)
+
+<span class="code-comment"># Load market data</span>
+loader = FinancialDataLoader()
+market_data = loader.fetch_market_data(period=<span class="code-string">'6mo'</span>)
+returns = loader.calculate_returns(market_data)
+correlation, assets = loader.compute_correlation_matrix(returns)
+
+<span class="code-comment"># Build quantum circuit</span>
+qc = QuantumFinanceCircuit(n_qubits=<span class="code-number">20</span>)
+circuit = qc.build_market_circuit(
+    correlation_matrix=correlation,
+    volatility_vector=volatilities
+)
+
+<span class="code-comment"># Run simulation</span>
+<span class="code-keyword">from</span> qiskit_aer <span class="code-keyword">import</span> AerSimulator
+simulator = AerSimulator()
+result = simulator.run(circuit, shots=<span class="code-number">5000</span>).result()
+counts = result.get_counts()
+
+<span class="code-comment"># Analyze results</span>
+quantum_results = qc.analyze_risk_states(counts)
+print(<span class="code-string">f"Expected Quantum Risk: </span>{quantum_results[<span class="code-string">'expected_risk'</span>]:.4f}<span class="code-string">"</span>)</code></pre>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p class="footer-text">© 2025 QFRM Research | Quantum Finance Risk Model v1.0</p>
+            <div class="footer-links">
+                <a href="https://github.com/shellworlds/RMDNSTSW" target="_blank">GitHub</a>
+                <a href="qfrm.py">Source Code</a>
+                <a href="finance_risk_output/">Outputs</a>
+                <a href="README.md">Documentation</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for sidebar links
+        document.querySelectorAll('.sidebar-menu a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                
+                // Update active state
+                document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Highlight active section on scroll
+        const sections = document.querySelectorAll('.content-section');
+        const navLinks = document.querySelectorAll('.sidebar-menu a[href^="#"]');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
