@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMDNSTSW | Zi-US - Quantum Finance Risk Model</title>
+    <meta name="description" content="Advanced quantum simulation for financial market risk analysis - Combining quantum computing with traditional finance metrics">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap');
+        
+        :root {
+            --primary: #000000;
+            --secondary: #1a1a1a;
+            --accent: #0066ff;
+            --quantum: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --gray-50: #fafafa;
+            --gray-100: #f4f4f5;
+            --gray-200: #e4e4e7;
+            --gray-300: #d4d4d8;
+            --gray-400: #a1a1aa;
+            --gray-500: #71717a;
+            --gray-600: #52525b;
+            --gray-700: #3f3f46;
+            --gray-800: #27272a;
+            --gray-900: #18181b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--primary);
+            background: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gray-200);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .nav-brand {
+            font-size: 1.125rem;
+            font-weight: 400;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-back {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            background: linear-gradient(180deg, var(--gray-50) 0%, white 100%);
+        }
+
+        .hero-banner h1 {
+            font-size: 3rem;
+            font-weight: 200;
+            letter-spacing: 0.1em;
+            color: var(--quantum);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-banner p {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .hero-tags {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 0.375rem 0.875rem;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--gray-600);
+        }
+
+        .tag.quantum {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+            border-color: rgba(139, 92, 246, 0.3);
+            color: var(--quantum);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            border-color: var(--gray-300);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            color: var(--primary);
+        }
+
+        .card p {
+            font-size: 0.9375rem;
+            color: var(--gray-600);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .card-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 400;
+            text-decoration: none;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+        }
+
+        .card-link.primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .card-link.primary:hover {
+            background: #0052cc;
+        }
+
+        .card-link.secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .card-link.secondary:hover {
+            background: var(--gray-200);
+        }
+
+        .card-link.quantum {
+            background: linear-gradient(135deg, var(--quantum), #ec4899);
+            color: white;
+        }
+
+        .card-link.quantum:hover {
+            opacity: 0.9;
+        }
+
+        /* Metrics Section */
+        .metrics-section {
+            margin: 3rem 0;
+        }
+
+        .metrics-section h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .metric-card {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 500;
+            color: var(--quantum);
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-value.danger {
+            color: var(--danger);
+        }
+
+        .metric-value.success {
+            color: var(--success);
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Animation Preview */
+        .animation-section {
+            margin: 3rem 0;
+        }
+
+        .animation-section h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .animation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .animation-card {
+            background: var(--gray-900);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .animation-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .animation-card figcaption {
+            padding: 1rem;
+            text-align: center;
+            color: var(--gray-400);
+            font-size: 0.875rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--gray-50);
+            border-radius: 0.5rem;
+            margin-top: 3rem;
+        }
+
+        .cta-section h2 {
+            font-size: 1.75rem;
+            font-weight: 400;
+            margin-bottom: 0.75rem;
+            color: var(--primary);
+        }
+
+        .cta-section p {
+            font-size: 1rem;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+        }
+
+        .cta-section .card-link {
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem;
+            border-top: 1px solid var(--gray-200);
+            text-align: center;
+        }
+
+        .footer-link {
+            color: var(--gray-500);
+            text-decoration: none;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-banner h1 {
+                font-size: 2rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .animation-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="https://www.zi-us.com" class="nav-brand">Zi-US</a>
+            <a href="https://www.zi-us.com/enterprise" class="nav-back">← Back to Portfolio</a>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <header class="hero-banner">
+        <h1>RMDNSTSW</h1>
+        <p>Quantum Finance Risk Model - Advanced quantum simulation for financial market risk analysis combining 20-qubit quantum circuits with traditional VaR, CVaR, and Sharpe ratio metrics for comprehensive portfolio risk assessment.</p>
+        <div class="hero-tags">
+            <span class="tag quantum">⚛️ Quantum Computing</span>
+            <span class="tag">VaR/CVaR</span>
+            <span class="tag">Risk Analysis</span>
+            <span class="tag">Qiskit</span>
+            <span class="tag">Real-time Data</span>
+            <span class="tag">3D Simulations</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Platform Cards -->
+        <section class="cards-grid">
+            <article class="card">
+                <h3>Live Platform</h3>
+                <p>Access the fully deployed QFRM platform with interactive risk dashboards, quantum circuit visualization, and real-time market data analysis powered by IBM Qiskit and Yahoo Finance.</p>
+                <div class="card-links">
+                    <a href="index.html" class="card-link primary">Launch Platform →</a>
+                    <a href="finance_risk_output/finance_risk_report_20251219_235149.html" class="card-link secondary">Interactive Report →</a>
+                </div>
+            </article>
+
+            <article class="card">
+                <h3>Source Code</h3>
+                <p>Explore the complete source code, documentation, and development resources for the Quantum Finance Risk Model including quantum circuit designs and risk calculation algorithms.</p>
+                <div class="card-links">
+                    <a href="https://github.com/shellworlds/RMDNSTSW" class="card-link primary" target="_blank">GitHub Repository →</a>
+                    <a href="qfrm.py" class="card-link secondary">View Source →</a>
+                </div>
+            </article>
+
+            <article class="card">
+                <h3>Quantum Simulations</h3>
+                <p>Experience 4-second animated 3D/2D quantum risk evolution simulations showing quantum state dynamics, risk distributions, and temporal market correlations in real-time.</p>
+                <div class="card-links">
+                    <a href="finance_risk_output/quantum_risk_simulation_20251219_235149.gif" class="card-link quantum" target="_blank">3D Simulation →</a>
+                    <a href="finance_risk_output/risk_evolution_20251219_235234.gif" class="card-link secondary" target="_blank">Risk Evolution →</a>
+                </div>
+            </article>
+
+            <article class="card">
+                <h3>Risk Dashboard</h3>
+                <p>Comprehensive visual risk dashboard with 6 panels: 3D distribution, correlation heatmap, metrics bar chart, scatter plot, timeline, and risk breakdown pie chart.</p>
+                <div class="card-links">
+                    <a href="finance_risk_output/finance_risk_dashboard_20251219_235148.png" class="card-link primary" target="_blank">View Dashboard →</a>
+                    <a href="finance_risk_output/finance_risk_report_20251219_235145.json" class="card-link secondary" target="_blank">JSON Data →</a>
+                </div>
+            </article>
+        </section>
+
+        <!-- Metrics Section -->
+        <section class="metrics-section">
+            <h2>Latest Risk Analysis Results</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value danger">-2.68%</div>
+                    <div class="metric-label">VaR (95%)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value danger">-4.29%</div>
+                    <div class="metric-label">CVaR (95%)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">29.35%</div>
+                    <div class="metric-label">Volatility</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value success">1.15</div>
+                    <div class="metric-label">Sharpe Ratio</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">0.146</div>
+                    <div class="metric-label">Quantum Risk</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">331</div>
+                    <div class="metric-label">Quantum States</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Animation Preview -->
+        <section class="animation-section">
+            <h2>Quantum Risk Simulations</h2>
+            <div class="animation-grid">
+                <figure class="animation-card">
+                    <a href="finance_risk_output/quantum_risk_simulation_20251219_235149.gif" target="_blank">
+                        <img src="finance_risk_output/quantum_risk_simulation_20251219_235149.gif" alt="Quantum Risk Simulation">
+                    </a>
+                    <figcaption>3D Quantum Risk State Evolution • 4 seconds @ 30 FPS</figcaption>
+                </figure>
+                <figure class="animation-card">
+                    <a href="finance_risk_output/risk_evolution_20251219_235234.gif" target="_blank">
+                        <img src="finance_risk_output/risk_evolution_20251219_235234.gif" alt="Risk Evolution Animation">
+                    </a>
+                    <figcaption>Risk Evolution Helix • 2D Polar Profile</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Ready to Explore Quantum Finance?</h2>
+            <p>Join us in advancing financial risk analysis through quantum computing.</p>
+            <a href="https://www.zi-us.com/contact" class="card-link primary">Contact Us →</a>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <a href="https://www.linkedin.com/company/zi-us" class="footer-link" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+            Follow us on LinkedIn
+        </a>
+    </footer>
+</body>
+</html>
+
