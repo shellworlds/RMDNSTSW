@@ -1,0 +1,149 @@
+version: '3.8'
+
+services:
+  # API Gateway
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+      - REDIS_HOST=redis
+      - RATE_LIMIT_REQUESTS=100
+      - JWT_SECRET=api-showcase-secret-key-2024-change-in-production
+    depends_on:
+      - discovery
+      - redis
+      - users
+    networks:
+      - api-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Eureka Discovery Service
+  discovery:
+    image: springcloud/eureka
+    ports:
+      - "8761:8761"
+    networks:
+      - api-network
+
+  # Redis for Caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - api-network
+
+  # PostgreSQL for Users
+  postgres-users:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_DB=users
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-users-data:/var/lib/postgresql/data
+      - ./user-service/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+    networks:
+      - api-network
+
+  # User Service
+  users:
+    build: ./user-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-users:5432/users
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin123
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+      - REDIS_HOST=redis
+    depends_on:
+      - postgres-users
+      - redis
+    networks:
+      - api-network
+
+  # Product Service
+  products:
+    build: ./product-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+    networks:
+      - api-network
+    depends_on:
+      - discovery
+
+  # Order Service
+  orders:
+    build: ./order-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+    networks:
+      - api-network
+    depends_on:
+      - discovery
+
+  # Web BFF Service
+  bff-web:
+    build: ./bff-web
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka
+      - USER_SERVICE_URL=http://users:8081
+    networks:
+      - api-network
+    depends_on:
+      - discovery
+      - users
+
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - api-network
+
+  # Grafana Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - api-network
+
+volumes:
+  redis-data:
+  postgres-users-data:
+  grafana-data:
+
+networks:
+  api-network:
+    driver: bridge
