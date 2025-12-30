@@ -1,0 +1,18 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: graphql-api
+
+graphql:
+  servlet:
+    mapping: /graphql
+    enabled: true
+    cors-enabled: true
+
+graphiql:
+  mapping: /graphiql
+  endpoint: /graphql
+  enabled: true
+  page-title: GraphQL API Playground
