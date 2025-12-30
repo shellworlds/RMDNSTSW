@@ -1,0 +1,50 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/v1/users/**
+          filters:
+            - RewritePath=/api/v1/users/(?<segment>.*), /$\{segment}
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@userKeyResolver}"
+        
+        - id: bff-web
+          uri: lb://BFF-WEB
+          predicates:
+            - Path=/web/**
+          filters:
+            - RewritePath=/web/(?<segment>.*), /$\{segment}
+    
+    discovery:
+      enabled: true
+  
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, prometheus
+  endpoint:
+    health:
+      show-details: always
